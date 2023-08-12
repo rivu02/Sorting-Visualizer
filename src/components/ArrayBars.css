@@ -1,0 +1,17 @@
+.array-bars-container {
+  display: flex;
+  justify-content: center; /* Align the array bars to the right */
+  height: 35rem; /* Adjust the height as needed */
+  padding: 1px;
+  padding-left: 100px;
+  padding-right: 100px;
+  }
+  
+  .array-bar {
+    width: 20px;
+    margin: 0 1px;
+    background-color: #3498db;
+  }
+ 
+  /* Add media query to adjust the width for smaller screens if necessary */
+  

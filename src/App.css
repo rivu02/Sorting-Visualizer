@@ -28,6 +28,10 @@
   color: #61dafb;
 }
 
+.app-container {
+  background-color: #e0e0e0;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -35,4 +39,15 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+body {
+  text-align: center;
+  background-color: #e0e0e0;
+}
+
+footer {
+  color: #282c34;
+  font-family: 'Montserrat', sans-serif;
+  margin-top: 70px;
 }
