@@ -7,11 +7,33 @@ const randomIntFromInterval = (min, max) => {
 };
 
 const Visualizer = () => {
+  const [sortingInProgress, setSortingInProgress] = useState(false);
   const [array, setArray] = useState([]);
   const [arraySize, setArraySize] = useState(100);
   const [visualizationSpeed, setVisualizationSpeed] = useState(500);
   const MAX_VISUALIZATION_SPEED = 1000;
   const MIN_VISUALIZATION_SPEED = 1;
+
+  const handleStartVisualization = async (algorithm) => {
+    setSortingInProgress(true);
+
+    if (algorithm === 'bubbleSort') {
+      await bubbleSort();
+    } else if (algorithm === 'selectionSort') {
+      await selectionSort();
+    } else if (algorithm === 'insertionSort') {
+      await quickSort([...array], 0, array.length - 1);
+    } else if (algorithm === 'mergeSort') {
+      await mergeSort([...array], 0, array.length - 1);
+    } else if (algorithm === 'quickSort') {
+      await quickSort([...array], 0, array.length - 1);
+    } else if (algorithm === 'radixSort') {
+      await radixSort([...array]);
+    }
+
+    setSortingInProgress(false);
+  };
+
 
   useEffect(() => {
     generateRandomArray();
@@ -152,6 +174,112 @@ const Visualizer = () => {
     return MAX_DELAY - speed + MIN_DELAY;
   };
 
+  const quickSort = async () => {
+    const newArray = [...array];
+    await quickSortHelper(newArray, 0, newArray.length - 1);
+  };
+
+  const quickSortHelper = async (arr, low, high) => {
+    if (low < high) {
+      const pivotIndex = await partition(arr, low, high);
+      await quickSortHelper(arr, low, pivotIndex - 1);
+      await quickSortHelper(arr, pivotIndex + 1, high);
+      await new Promise((resolve) => setTimeout(resolve, MAX_VISUALIZATION_SPEED - visualizationSpeed + MIN_VISUALIZATION_SPEED));
+    }
+  };
+
+  const partition = async (arr, low, high) => {
+    const pivot = arr[high];
+    let i = low - 1;
+
+    for (let j = low; j < high; j++) {
+      if (arr[j] < pivot) {
+        i++;
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+        setArray([...arr]);
+        await new Promise((resolve) => setTimeout(resolve, 100)); // Adjusted delay for faster animation
+      }
+    }
+
+    [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
+    setArray([...arr]);
+    await new Promise((resolve) => setTimeout(resolve, 100)); // Adjusted delay for faster animation
+    return i + 1;
+  };
+
+  // const bucketSort = async () => {
+  //   const newArray = [...array];
+  //   const n = newArray.length;
+
+  //   let minValue = newArray[0].value;
+  //   let maxValue = newArray[0].value;
+
+  //   for (let i = 1; i < n; i++) {
+  //     if (newArray[i].value < minValue) {
+  //       minValue = newArray[i].value;
+  //     }
+  //     if (newArray[i].value > maxValue) {
+  //       maxValue = newArray[i].value;
+  //     }
+  //   }
+
+  //   const numBuckets = Math.floor(Math.sqrt(n));
+  //   const bucketSize = (maxValue - minValue) / numBuckets + 1;
+  //   const buckets = Array.from({ length: numBuckets }, () => []); // Initialize buckets as empty arrays
+
+  //   for (let i = 0; i < n; i++) {
+  //     const bucketIndex = Math.floor((newArray[i].value - minValue) / bucketSize);
+  //     //console.log(newArray[i]);
+  //     buckets[bucketIndex].push(newArray[i]);
+  //   }
+
+  //   let sortedArray = [];
+  //   for (let i = 0; i < numBuckets; i++) {
+  //     buckets[i].sort((a, b) => a.value - b.value);
+  //     sortedArray = sortedArray.concat(buckets[i]);
+  //     setArray(sortedArray);
+  //     await new Promise((resolve) => setTimeout(resolve, mapSpeedToDelay(visualizationSpeed, "bucketSort")));
+  //   }
+  // };
+
+  const radixSort = async () => {
+    const newArray = [...array];
+    const maxNum = Math.max(...newArray);
+    const maxDigits = Math.floor(Math.log10(maxNum) + 1);
+
+    for (let i = 0; i < maxDigits; i++) {
+      await countingSort(newArray, i);
+    }
+  };
+
+  const countingSort = async (arr, digitPlace) => {
+    const countArray = new Array(10).fill(0);
+    const outputArray = new Array(arr.length);
+
+    // Counting phase
+    for (let i = 0; i < arr.length; i++) {
+      const digit = getDigit(arr[i], digitPlace);
+      countArray[digit]++;
+    }
+
+    // Adjust count array
+    for (let i = 1; i < countArray.length; i++) {
+      countArray[i] += countArray[i - 1];
+    }
+
+    // Sorting phase
+    for (let i = arr.length - 1; i >= 0; i--) {
+      const digit = getDigit(arr[i], digitPlace);
+      outputArray[countArray[digit] - 1] = arr[i];
+      countArray[digit]--;
+      setArray([...outputArray]);
+      await new Promise((resolve) => setTimeout(resolve, MAX_VISUALIZATION_SPEED - visualizationSpeed + MIN_VISUALIZATION_SPEED));
+    }
+  };
+
+  const getDigit = (num, digitPlace) => {
+    return Math.floor(Math.abs(num) / Math.pow(10, digitPlace)) % 10;
+  };
 
   return (
     <div>
@@ -161,10 +289,14 @@ const Visualizer = () => {
         startSelectionSort={selectionSort}
         startInsertionSort={insertionSort}
         startMergeSort={mergeSort}
+        startQuickSort={quickSort}
+        startRadixSort={radixSort}
         arraySize={arraySize}
         setArraySize={setArraySize}
         visualizationSpeed={visualizationSpeed}
         setVisualizationSpeed={setVisualizationSpeed}
+        sortingInProgress={sortingInProgress}
+        handleStartVisualization={handleStartVisualization}
       />
       <div className="array-container">
         <ArrayBars array={array} />

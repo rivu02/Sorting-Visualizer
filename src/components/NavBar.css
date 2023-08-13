@@ -5,13 +5,13 @@ padding: 0;
 margin: 0;
 }
 
-.nav-link{
-    margin-left: 40px;
-    color: white;
+.nav-link.disabled {
+  pointer-events: none;
+  color: #999;
 }
 
 .navbar-nav .nav-link {
-    margin-left: 40px;
+    margin-left: 30px;
     color: white;
   }
   
@@ -26,7 +26,7 @@ nav.navbar .navbar-brand {
   }
 
   .navbar-nav .slider-container {
-    margin-left: 1.5rem;
+    margin-left: 5rem;
   }
   
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './NavBar.css';
 
-const NavBar = ({ generateRandomArray, startBubbleSort, startSelectionSort, startInsertionSort, startMergeSort,startQuickSort,startBucketSort, arraySize, setArraySize, visualizationSpeed, setVisualizationSpeed }) => {
+const NavBar = ({ generateRandomArray, startBubbleSort, startSelectionSort, startInsertionSort, startMergeSort, startQuickSort, startRadixSort, arraySize, setArraySize, visualizationSpeed, setVisualizationSpeed, sortingInProgress, isVisualizing }) => {
     const [isNavOpen, setIsNavOpen] = useState(false);
 
     const toggleNav = () => {
@@ -33,43 +33,109 @@ const NavBar = ({ generateRandomArray, startBubbleSort, startSelectionSort, star
 
                 <div className={`collapse navbar-collapse${isNavOpen ? ' show' : ''}`} id="navbarNavDropdown">
                     <ul className="navbar-nav">
-                        <li className="nav-item-active">
-                            <a className="nav-link" href="#" onClick={generateRandomArray}>
+                        <li className="nav-item">
+                            <a
+                                className={`nav-link ${sortingInProgress ? 'disabled' : ''}`}
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    if (!sortingInProgress) {
+                                        generateRandomArray();
+                                    }
+                                }}
+                            >
                                 Generate New Array
                             </a>
                         </li>
 
                         <li className="nav-item">
-                            <a className="nav-link" href="#" onClick={startBubbleSort}>
+                            <a
+                                className={`nav-link ${sortingInProgress ? 'disabled' : ''}`}
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    if (!sortingInProgress) {
+                                        startBubbleSort();
+                                    }
+                                }}
+                            >
                                 Bubble Sort
-                            </a>
-                        </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="#" onClick={startSelectionSort}>
-                                Selection Sort
-                            </a>
-                        </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="#" onClick={startInsertionSort}>
-                                Insertion Sort
                             </a>
                         </li>
 
                         <li className="nav-item">
-                            <a className="nav-link" href="#" onClick={startMergeSort}>
+                            <a
+                                className={`nav-link ${sortingInProgress ? 'disabled' : ''}`}
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    if (!sortingInProgress) {
+                                        startSelectionSort();
+                                    }
+                                }}
+                            >
+                                Selection Sort
+                            </a>
+                        </li>
+
+                        <li className="nav-item">
+                            <a
+                                className="nav-link"
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    if (!isVisualizing) {
+                                        startInsertionSort();
+                                    }
+                                }}
+                            >
+                                Insertion Sort
+                            </a>
+                        </li>
+
+
+                        <li className="nav-item">
+                            <a
+                                className="nav-link"
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    if (!isVisualizing) {
+                                        startMergeSort();
+                                    }
+                                }}
+                            >
                                 Merge Sort
                             </a>
                         </li>
 
                         <li className="nav-item">
-                            <a className="nav-link" href="#" onClick={startQuickSort}>
+                            <a
+                                className="nav-link"
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    if (!isVisualizing) {
+                                        startQuickSort();
+                                    }
+                                }}
+                            >
                                 Quick Sort
                             </a>
                         </li>
 
                         <li className="nav-item">
-                            <a className="nav-link" href="#" onClick={startBucketSort}>
-                                Bucket Sort
+                            <a
+                                className="nav-link"
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    if (!isVisualizing) {
+                                        startRadixSort();
+                                    }
+                                }}
+                            >
+                                Radix Sort
                             </a>
                         </li>
 
@@ -84,8 +150,8 @@ const NavBar = ({ generateRandomArray, startBubbleSort, startSelectionSort, star
                                         value={arraySize}
                                         onChange={(e) => setArraySize(e.target.value)}
                                         className="slider-right"
+                                        disabled={isVisualizing} // Disable while visualization is in progress
                                     />
-
                                 </div>
                                 <small className="slider-label ml-2"> Speed</small>
                                 <div className="d-flex align-items-center">
@@ -96,10 +162,12 @@ const NavBar = ({ generateRandomArray, startBubbleSort, startSelectionSort, star
                                         value={visualizationSpeed}
                                         onChange={(e) => setVisualizationSpeed(e.target.value)}
                                         className="slider-right"
+                                        disabled={isVisualizing} // Disable while visualization is in progress
                                     />
                                 </div>
                             </div>
                         </li>
+
                         {/* Add other sorting algorithms here */}
                     </ul>
                 </div>
